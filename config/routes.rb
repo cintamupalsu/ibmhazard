@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
   
+  get 'datamanager/region'
+  post 'datamanager/seedregion'
+  post 'datamanager/deleteallregion'
+
   root 'static_pages#home'
   
   get 'static_pages/home'

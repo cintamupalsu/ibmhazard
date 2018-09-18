@@ -1,0 +1,31 @@
+<% provide(:title, "Region Data Management") %>
+<table border ="1" align="center">
+    <tr>
+        <th>
+            Description
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Region Data Seed
+        </td>
+        <td>
+            <%= form_tag datamanager_seedregion_path, multipart: true do %>
+                File Txt: <%= file_field_tag :fileTXT %>
+                <%= submit_tag "Lets Seed the Region table!" %>
+            <% end %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Delete All Region
+        </td>
+        <td>
+            <%= button_to 'Delete All Region', datamanager_deleteallregion_path %>
+        </td>
+    </tr>
+</table>
+
