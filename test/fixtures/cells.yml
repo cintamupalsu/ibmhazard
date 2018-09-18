@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  anchor: one
+  hazard: one
+  lat: 1.5
+  lon: 1.5
+  x: 1
+  'y': 1
+  v: 1.5
+
+two:
+  anchor: two
+  hazard: two
+  lat: 1.5
+  lon: 1.5
+  x: 1
+  'y': 1
+  v: 1.5

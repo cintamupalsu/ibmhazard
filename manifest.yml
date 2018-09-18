@@ -1,0 +1,6 @@
+applications:
+- name: hazardmap
+  memory: 128M
+  instances: 1
+  command: rake db:migrate && bin/rails server -p $PORT -e $RAILS_ENV
+  # command: bin/rails server -p $PORT -e $RAILS_ENV

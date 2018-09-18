@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  n_node: 1
+  p_node: 1
+  n_distance: 1.5
+  p_distance: 1.5
+  way: one
+  node: one
+
+two:
+  n_node: 1
+  p_node: 1
+  n_distance: 1.5
+  p_distance: 1.5
+  way: two
+  node: two
