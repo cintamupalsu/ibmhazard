@@ -3,6 +3,12 @@ Rails.application.routes.draw do
   get 'datamanager/region'
   post 'datamanager/seedregion'
   post 'datamanager/deleteallregion'
+  get 'datamanager/hazard'
+  post 'datamanager/deleteallhazard'
+  post 'datamanager/seedhazard'
+  get 'datamanager/zone'
+  post 'datamanager/deleteallzone'
+  post 'datamanager/seedzone'
 
   root 'static_pages#home'
   

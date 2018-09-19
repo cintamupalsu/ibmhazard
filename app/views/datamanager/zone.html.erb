@@ -1,0 +1,37 @@
+<% provide(:title, "Zone Data Management") %>
+<table border ="1" align="center">
+    <tr>
+        <th>
+            Description
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Zone Data Seed
+        </td>
+        <td>
+            <%= form_tag datamanager_seedzone_path, multipart: true do %>
+                File Txt: <%= file_field_tag :fileZoneSeed %>
+                <%= submit_tag "Zone Seed" %>
+            <% end %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Delete All Zone
+        </td>
+        <td>
+            <%= button_to 'Delete All Zone', datamanager_deleteallzone_path %>
+        </td>
+    </tr>
+</table>
+<%= link_to('Back to home', static_pages_home_path)%>
+<% if @zones.count>0 %>
+<% (0..10).each do |i|%>
+	<p>Zone ID: <%=@zones[i].id%>,Region ID: <%=@zones[i].region_id %>, <%=@zones[i].place%>, <%=@zones[i].lat %>, <%=@zones[i].lon %></p>
+<% end %>
+<% end %>
+<p>Total Zone: <%= @zones.count %></p>

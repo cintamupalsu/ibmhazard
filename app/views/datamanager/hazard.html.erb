@@ -1,0 +1,36 @@
+<% provide(:title, "Hazard Data Management") %>
+<table border ="1" align="center">
+    <tr>
+        <th>
+            Description
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Hazard Data Seed
+        </td>
+        <td>
+            <%= form_tag datamanager_seedhazard_path, multipart: true do %>
+                File Txt: <%= file_field_tag :fileHazardSeed %>
+                <%= submit_tag "Hazard table seed" %>
+            <% end %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Delete All Region
+        </td>
+        <td>
+            <%= button_to 'Delete All Hazard', datamanager_deleteallhazard_path %>
+        </td>
+    </tr>
+</table>
+<%= link_to('Back to home', static_pages_home_path)%>
+<% if @hazards.count>0 %>
+  <% (0..@hazards.count-1).each do |i|%>
+	  <p><%=@hazards[i].id%>, <%=@hazards[i].name%></p>
+  <% end %>
+<% end %>
