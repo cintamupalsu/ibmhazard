@@ -28,4 +28,7 @@
         </td>
     </tr>
 </table>
-
+<%= link_to('Back to home', static_pages_home_path)%>
+<% (0..@regions.count-1).each do |i|%>
+	<p><%=@regions[i].id%>, <%=@regions[i].name%></p>
+<% end %>
