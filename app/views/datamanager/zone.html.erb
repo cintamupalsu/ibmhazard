@@ -30,7 +30,7 @@
 </table>
 <%= link_to('Back to home', static_pages_home_path)%>
 <% if @zones.count>0 %>
-<% (0..10).each do |i|%>
+<% (@zones.count-10..@zones.count-1).each do |i|%>
 	<p>Zone ID: <%=@zones[i].id%>,Region ID: <%=@zones[i].region_id %>, <%=@zones[i].place%>, <%=@zones[i].lat %>, <%=@zones[i].lon %></p>
 <% end %>
 <% end %>

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
   
+  get 'landslide/index'
+
+  get 'landslide/map'
+
   get 'datamanager/region'
   post 'datamanager/seedregion'
   post 'datamanager/deleteallregion'
@@ -9,6 +13,9 @@ Rails.application.routes.draw do
   get 'datamanager/zone'
   post 'datamanager/deleteallzone'
   post 'datamanager/seedzone'
+  
+  get 'landslide/index'
+  get 'landslide/map'
 
   root 'static_pages#home'
   

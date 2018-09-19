@@ -1,0 +1,2 @@
+module LandslideHelper
+end
