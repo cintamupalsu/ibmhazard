@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
   
+  get 'flood/index'
+
+  get 'flood/map'
+
+  get 'tsunami/index'
+
+  get 'tsunami/map'
+
   get 'landslide/index'
 
   get 'landslide/map'

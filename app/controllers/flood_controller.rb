@@ -1,11 +1,11 @@
 require "./lib/assets/ruby/clsGeo.rb"
 require "./lib/assets/ruby/clsGmap.rb"
-class LandslideController < ApplicationController
+class FloodController < ApplicationController
   def index
   end
     
   def map
-    #sample parameters http://ibmhazard-maulanamania.c9users.io/landslide/map?coord=34.905062_138.347685_640_640_jpg_16_test_1
+    #sample parameters http://ibmhazard-maulanamania.c9users.io/flood/map?coord=34.783155_138.284074_640_640_jpg_16_test_1_60_120_180
     parastr = params[:coord]
 
     #breakdown parametes >>>
@@ -18,26 +18,35 @@ class LandslideController < ApplicationController
     map_scale=dline[5].to_i
     map_type=dline[7].to_i
     username=dline[6]
+    sim_time = Array.new(3,0)
+    sim_time[0]=dline[8].to_i
+    sim_time[1]=dline[9].to_i
+    sim_time[2]=dline[10].to_i
+    
     #breakdown parametes <<<
     
     # security reason
     if username.length<30 && map_format.length<4
       # generate map >>>
-      rectangle_map = gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username)
+      #rectangle_map_1 = gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username, sim_time[0])
+      #rectangle_map_2 = gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username, sim_time[1])
+      #rectangle_map_3 = gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username, sim_time[2])
+      rectangle_map = gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username, sim_time)
     
       # generate map <<<
-      render :json=>{map: rectangle_map}
+      render :json=>{map_1: rectangle_map[0], map_2: rectangle_map[1], map_3: rectangle_map[2]}
+      # render :json=>{map_2: rectangle_map_2, map_3: rectangle_map_3}
     else
-      render :json=>{map: "https://hazardmap.mybluemix.net/shared/images/paraerror.jpg", view: "http://hazard-maulanamania.c9users.io/picture/paraerror.jpg"}
+      render :json=>{map_1: "https://hazardmap.mybluemix.net/shared/images/paraerror.jpg", map_2: "http://hazard-maulanamania.c9users.io/picture/paraerror.jpg", map_3: "http://hazard-maulanamania.c9users.io/picture/paraerror.jpg"}
     end
   end
   
-  def gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username)
+  def gen_rectangle_map(lat, lon, map_width, map_height, map_format, map_scale, map_type, username, sim_time)
     # declaration >>>
     clsGeo = ClsGeo.new()
     clsGmap = ClsGmap.new()
     # declaration <<<
-
+    
     # select 2 closest region >>>
     region_hash = {}
     Region.all.each do |region|
@@ -60,7 +69,7 @@ class LandslideController < ApplicationController
 
     # select 2 closest zones >>>
     zone_hash = {}
-    closest_zone = Array.new(9,0)
+    closest_zone = Array.new(4,0)
     zones = Zone.where("region_id IN(?)",closest_region)
     zones.each do |zone|
       distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
@@ -76,35 +85,16 @@ class LandslideController < ApplicationController
       end
       zone_counter+=1
     end
-    #closest_distance = -1 # default closest distance for null
-    
-    #zones = Zone.where("region_id IN(?)",closest_region)
-    
-    #Zone.all.each do |zone|
-    #zones.each do |zone|
-    #  distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
-    #  # select 1st closest zone
-    #  if closest_distance == -1
-    #    closest_zone[0] = zone.id
-    #    closest_distance = distance_to_zone
-    #  end
-    #  # select 2nd, 3rd, 4th closest zone
-    #  if distance_to_zone<closest_distance
-    #    closest_zone[3] = closest_zone[2]
-    #    closest_zone[2] = closest_zone[1]
-    #    closest_zone[1] = closest_zone[0]
-    #    closest_zone[0] = zone.id
-    #    closest_distance = distance_to_zone
-    #  end
-    #end
     # select 2 closest zones <<<
     
     # select 111 closest rectangle >>>
     top111 = 111
     adj_lat = -9999 
     adj_lon = -9999
-    closest_rectangle = {}
-    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ?",closest_zone,3) # Hazard id 1 is Tsunami 10 meters hazard
+    closest_rectangle1 = {}
+    closest_rectangle2 = {}
+    closest_rectangle3 = {}
+    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ? AND iteration IN (?)",closest_zone, 2, sim_time) # Hazard id 1 is Tsunami 10 meters hazard
     rectangles.all.each do |rectangle|
       distance_to_rectangle = -1 # default value for null in distance
   
@@ -123,12 +113,45 @@ class LandslideController < ApplicationController
         cubic_lon = d2line_inside[1].to_f
         distance_to_cubic = clsGeo.geo_distance(cubic_lat+adj_lat, cubic_lon+adj_lon, lat, lon, 0)
         if distance_to_rectangle==-1 || distance_to_rectangle > distance_to_cubic
-          closest_rectangle[rectangle.id]=distance_to_cubic # get smallest
+          if rectangle.iteration==sim_time[0]
+            closest_rectangle1[rectangle.id]=distance_to_cubic # get smallest
+          end
+          if rectangle.iteration==sim_time[1]
+            closest_rectangle2[rectangle.id]=distance_to_cubic # get smallest
+          end
+          if rectangle.iteration==sim_time[2]
+            closest_rectangle3[rectangle.id]=distance_to_cubic # get smallest
+          end
           distance_to_rectangle = distance_to_cubic
         end 
       end # end do j
     end # end do rectangle
-    closest_rectangle = closest_rectangle.sort_by(&:last)
+    closest_rectangle1 = closest_rectangle1.sort_by(&:last)
+    closest_rectangle2 = closest_rectangle2.sort_by(&:last)
+    closest_rectangle3 = closest_rectangle3.sort_by(&:last)
+    staticmap = Array.new(3,"")
+    
+    # first image
+    staticmap[0] = gen_flood_series_image(top111,closest_rectangle1,sim_time[0], map_width, map_height, lat, lon, map_scale, map_type, adj_lat, adj_lon, username, map_format)
+    
+    # third image
+    staticmap[1] = gen_flood_series_image(top111,closest_rectangle2,sim_time[1], map_width, map_height, lat, lon, map_scale, map_type, adj_lat, adj_lon, username, map_format)
+   
+    # third image
+    staticmap[2] = gen_flood_series_image(top111,closest_rectangle3,sim_time[2], map_width, map_height, lat, lon, map_scale, map_type, adj_lat, adj_lon, username, map_format)
+
+    return staticmap
+    # return link of map image <<<
+    
+  end
+  
+  private
+  
+  def gen_flood_series_image(top111, closest_rectangle, sim_time, map_width, map_height, lat, lon, map_scale, map_type, adj_lat, adj_lon, username, map_format)
+    
+    clsGmap = ClsGmap.new()
+
+    
     lat0 = Array.new(top111)
     lat1 = Array.new(top111)
     lat2 = Array.new(top111)
@@ -141,7 +164,7 @@ class LandslideController < ApplicationController
     counttop = 0
     
     closest_rectangle.each do |key, value|
-      if counttop<top111
+      if counttop<top111 || rectangle_value[counttop]==nil
         rectangle = Rectangle.find(key)
         lat0[counttop] = rectangle.lat0
         lat1[counttop] = rectangle.lat1
@@ -159,16 +182,18 @@ class LandslideController < ApplicationController
     end
     # select 111 closest rectangle <<<
     
+    
     # generate rectangles on map >>>
+    
     gmapstatic_str_header = "https://maps.googleapis.com/maps/api/staticmap?"
     gmapstatic_str_params = "size=" + map_width.to_s + "x" + map_height.to_s + 
                             "&scale=1&center=" + lat.to_s + "," + lon.to_s +
                             "&zoom=" + map_scale.to_s
     gmapstatic_str_marker = "&markers=size:tiny%7Ccolor:yellow%7C" + lat.to_s + "," + lon.to_s
+    gmapstatic_str_key = "&key="
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
-    gmapstatic_str_key = "&key="
     
     thickness = 33.to_s
     gmapstatic_str_rectangle = ""
@@ -196,8 +221,7 @@ class LandslideController < ApplicationController
     gmapstatic_str = gmapstatic_str_header + 
                      gmapstatic_str_params +
                      gmapstatic_str_marker +
-                     gmapstatic_str_rectangle +
-                     gmapstatic_str_key
+                     gmapstatic_str_rectangle + gmapstatic_str_key
     # generate rectangles on map <<<
     
     # registering user and map image >>>
@@ -208,9 +232,8 @@ class LandslideController < ApplicationController
     
     fileRescue=true
     begin
-      open("public/uploads/guest/picture/landslide"+username+"."+map_format, 'wb') do |file|
+      open("public/uploads/guest/picture/flood"+sim_time.to_s+username+"."+map_format, 'wb') do |file|
         file << open(gmapstatic_str).read
-        #file << open("http://ibmhazard-maulanamania.c9users.io/shared/images/QRCode.png").read
         @guest.picture = file
       end
     rescue
@@ -226,8 +249,10 @@ class LandslideController < ApplicationController
       staticmap = "https://hazardmap.mybluemix.net/shared/images/paraerror.jpg"
       #staticmap = gmapstatic_str
     end
-    # return link of map image <<<
+
     
+    return staticmap
+    # return link of map image <<<
+
   end
-  
 end
