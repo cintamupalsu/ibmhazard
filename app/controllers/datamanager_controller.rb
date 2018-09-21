@@ -17,7 +17,7 @@ class DatamanagerController < ApplicationController
   end
   
   def deleteallregion
-    # Region.delete_all
+    Region.delete_all
     @message = "Its done"
   end
   
@@ -31,14 +31,14 @@ class DatamanagerController < ApplicationController
     until fTxt.eof do
       dline=fTxt.gets.chomp.split('|')
       if dline[0]!=nil
-        #Hazard.create(name:dline[0])      
+        Hazard.create(name:dline[0])      
       end
     end
     fTxt.close()
   end
   
   def deleteallhazard
-    #Hazard.delete_all
+    Hazard.delete_all
     @message = "Hazard deleted"
   end
 
@@ -64,7 +64,7 @@ class DatamanagerController < ApplicationController
       if linecount>0 && detail
         dline=fTxt.gets.chomp.split('|')
         if dline[1]!=nil
-          #Zone.create(region_id: @region[0].id, place: dline[0], lat: dline[1].to_f, lon: dline[2].to_f, x: dline[3].to_i, y: dline[4].to_i)      
+          Zone.create(region_id: @region[0].id, place: dline[0], lat: dline[1].to_f, lon: dline[2].to_f, x: dline[3].to_i, y: dline[4].to_i)      
         end
       end
       linecount+=1
@@ -73,7 +73,7 @@ class DatamanagerController < ApplicationController
   end
   
   def deleteallzone
-    #Zone.delete_all
+    Zone.delete_all
     @message = "Zone deleted"
   end
 
@@ -88,14 +88,14 @@ class DatamanagerController < ApplicationController
     until fTxt.eof do
       dline=fTxt.gets.chomp.split(';')
       if dline[1]!=nil
-        #Anchor.create(adj_lat: dline[0].to_f, adj_lon: dline[1].to_f, cellsize: dline[2].to_f, name: dline[3], llat: dline[4].to_f, llon: dline[5].to_f, nrows: dline[6].to_i, ncols: dline[7].to_i, x: dline[8].to_i, y: dline[9].to_i)      
+        Anchor.create(adj_lat: dline[0].to_f, adj_lon: dline[1].to_f, cellsize: dline[2].to_f, name: dline[3], llat: dline[4].to_f, llon: dline[5].to_f, nrows: dline[6].to_i, ncols: dline[7].to_i, x: dline[8].to_i, y: dline[9].to_i)      
       end
     end
     fTxt.close()
   end
   
   def deleteallanchor
-    #Anchor.delete_all
+    Anchor.delete_all
     @message = "Anchor deleted"
   end
 
@@ -124,7 +124,7 @@ class DatamanagerController < ApplicationController
         if dline[1]!=nil
           @zone = Zone.where('place =?', dline[0])
           if@zone.count>0
-            #Rectangle.create(anchor_id: @anchor[0].id, rank: dline[1], iteration: iteration.to_s, zone_id: @zone[0].id, hazard_id: @hazard[0].id, lat0: dline[2], lon0: dline[3], lat1: dline[4], lon1: dline[5], lat2: dline[6], lon2: dline[7], lat3: dline[8], lon3: dline[9], inside: dline[10])      
+            Rectangle.create(anchor_id: @anchor[0].id, rank: dline[1], iteration: iteration.to_s, zone_id: @zone[0].id, hazard_id: @hazard[0].id, lat0: dline[2], lon0: dline[3], lat1: dline[4], lon1: dline[5], lat2: dline[6], lon2: dline[7], lat3: dline[8], lon3: dline[9], inside: dline[10])      
           end
         end
       end
@@ -134,7 +134,7 @@ class DatamanagerController < ApplicationController
   end
   
   def deleteallrectangle
-    #Rectangle.delete_all
+    Rectangle.delete_all
     @message = "Rectangle deleted"
   end
 

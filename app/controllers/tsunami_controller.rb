@@ -5,7 +5,7 @@ class TsunamiController < ApplicationController
   end
 
   def map
-    #sample parameters http://hazard-maulanamania.c9users.io/tsunami/map?coord=34.905062_138.347685_640_640_jpg_16_test_1
+    #sample parameters http://hazard-maulanamania.c9users.io/tsunami/map?coord=37.764693_-122.389301_640_640_jpg_16_test_1
     #
     parastr = params[:coord]
 
@@ -39,23 +39,59 @@ class TsunamiController < ApplicationController
     clsGmap = ClsGmap.new()
     # declaration <<<
     
-    # select 2 closest zones >>>
-    closest_zone = Array.new(2,0)
-    closest_distance = -1 # default closest distance for null
-    Zone.all.each do |zone|
-      distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
-      # select 1st closest zone
-      if closest_distance == -1
-        closest_zone[0] = zone.id
-        closest_distance = distance_to_zone
-      end
-      # select 2nd closest zone
-      if distance_to_zone<closest_distance
-        closest_zone[1] = closest_zone[0]
-        closest_zone[0] = zone.id
-        closest_distance = distance_to_zone
-      end
+    # select 2 closest region >>>
+    region_hash = {}
+    Region.all.each do |region|
+      distance_to_region = clsGeo.geo_distance(region.lat, region.lon, lat, lon, 0)
+      region_hash[region.id] = distance_to_region
     end
+    
+    region_hash = region_hash.sort_by(&:last)
+    closest_region = Array.new(2,0)
+    region_counter=0
+    region_hash.each do |key, value|
+      if region_counter<closest_region.count
+        closest_region[region_counter]=key.to_i
+      else
+        break
+      end
+      region_counter+=1
+    end
+    # select 2 closest region <<<
+    
+    # select 2 closest zones >>>
+    zone_hash = {}
+    closest_zone = Array.new(9,0)
+    zones = Zone.where("region_id IN(?)",closest_region)
+    zones.each do |zone|
+      distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
+      zone_hash[zone.id] = distance_to_zone
+    end
+    zone_hash = zone_hash.sort_by(&:last)
+    zone_counter=0
+    zone_hash.each do |key, value|
+      if zone_counter<closest_zone.count
+        closest_zone[zone_counter]=key.to_i
+      else
+        break
+      end
+      zone_counter+=1
+    end
+    #closest_distance = -1 # default closest distance for null
+    #Zone.all.each do |zone|
+    #  distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
+    #  # select 1st closest zone
+    #  if closest_distance == -1
+    #    closest_zone[0] = zone.id
+    #    closest_distance = distance_to_zone
+    #  end
+    #  # select 2nd closest zone
+    #  if distance_to_zone<closest_distance
+    #    closest_zone[1] = closest_zone[0]
+    #    closest_zone[0] = zone.id
+    #    closest_distance = distance_to_zone
+    #  end
+    #end
     # select 2 closest zones <<<
     
     # select 111 closest rectangle >>>
@@ -204,7 +240,7 @@ class TsunamiController < ApplicationController
     # declaration <<<
     
     # select 2 closest zones >>>
-    closest_zone = Array.new(2,0)
+    closest_zone = Array.new(9,0)
     closest_distance = -1 # default closest distance for null
     Zone.all.each do |zone|
       distance_to_zone = clsGeo.geo_distance(zone.lat, zone.lon, lat, lon, 0)
