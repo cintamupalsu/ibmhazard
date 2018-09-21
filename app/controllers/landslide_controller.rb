@@ -170,7 +170,7 @@ class LandslideController < ApplicationController
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
-    gmapstatic_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
+    gmapstatic_str_key = "&key="
     
     thickness = 33.to_s
     gmapstatic_str_rectangle = ""

@@ -134,7 +134,7 @@ class TsunamiController < ApplicationController
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
-    gmap_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
+    gmap_str_key = "&key="
     
     thickness = 33.to_s
     gmapstatic_str_rectangle = ""
@@ -246,7 +246,7 @@ class TsunamiController < ApplicationController
       gmapstatic_str_position = "&location="+lat.to_s+","+lon.to_s+
                                 "&heading="+tetha.to_s+
                                 "&pitch=15&&fov=65"
-      gmap_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
+      gmap_str_key = "&key="
       
       # google map apis string generator <<<
       # registering user and map image >>>

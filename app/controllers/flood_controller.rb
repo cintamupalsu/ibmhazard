@@ -191,7 +191,7 @@ class FloodController < ApplicationController
                             "&scale=1&center=" + lat.to_s + "," + lon.to_s +
                             "&zoom=" + map_scale.to_s
     gmapstatic_str_marker = "&markers=size:tiny%7Ccolor:yellow%7C" + lat.to_s + "," + lon.to_s
-    gmapstatic_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
+    gmapstatic_str_key = "&key="
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
