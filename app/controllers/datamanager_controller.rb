@@ -77,4 +77,66 @@ class DatamanagerController < ApplicationController
     @message = "Zone deleted"
   end
 
+  def anchor
+    @anchors = Anchor.all  
+  end
+  
+  def seedanchor
+    varTxt=params[:fileAnchorSeed]
+    fTxt=open(varTxt.path,"r:UTF-8")
+
+    until fTxt.eof do
+      dline=fTxt.gets.chomp.split(';')
+      if dline[1]!=nil
+        #Anchor.create(adj_lat: dline[0].to_f, adj_lon: dline[1].to_f, cellsize: dline[2].to_f, name: dline[3], llat: dline[4].to_f, llon: dline[5].to_f, nrows: dline[6].to_i, ncols: dline[7].to_i, x: dline[8].to_i, y: dline[9].to_i)      
+      end
+    end
+    fTxt.close()
+  end
+  
+  def deleteallanchor
+    #Anchor.delete_all
+    @message = "Anchor deleted"
+  end
+
+  def rectangle
+    @rectangles = Rectangle.all  
+  end
+  
+  def seedrectangle
+    varTxt=params[:fileRectangleSeed]
+    fTxt=open(varTxt.path,"r:UTF-8")
+    linecount = 0
+    iteration = 0
+    detail = false
+    until fTxt.eof do
+      if linecount==0
+        dline=fTxt.gets.chomp.split(';')
+        @anchor = Anchor.where('name = ?',dline[1])
+        @hazard = Hazard.where('name = ?',dline[0]) 
+        iteration = dline[2].to_i
+        if @anchor.count>0 && @hazard.count>0 
+          detail=true
+        end
+      end
+      if linecount>0 && detail
+        dline=fTxt.gets.chomp.split(';')
+        if dline[1]!=nil
+          @zone = Zone.where('place =?', dline[0])
+          if@zone.count>0
+            #Rectangle.create(anchor_id: @anchor[0].id, rank: dline[1], iteration: iteration.to_s, zone_id: @zone[0].id, hazard_id: @hazard[0].id, lat0: dline[2], lon0: dline[3], lat1: dline[4], lon1: dline[5], lat2: dline[6], lon2: dline[7], lat3: dline[8], lon3: dline[9], inside: dline[10])      
+          end
+        end
+      end
+      linecount+=1
+    end
+    fTxt.close()
+  end
+  
+  def deleteallrectangle
+    #Rectangle.delete_all
+    @message = "Rectangle deleted"
+  end
+
+
 end

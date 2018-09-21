@@ -59,11 +59,12 @@ class TsunamiController < ApplicationController
     # select 2 closest zones <<<
     
     # select 111 closest rectangle >>>
+    hazardRec= Hazard.where("name = ?", 'Tsunami 10 meters')
     top111 = 111
     adj_lat = -9999 
     adj_lon = -9999
     closest_rectangle = {}
-    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ?",closest_zone,1) # Hazard id 1 is Tsunami 10 meters hazard
+    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ?",closest_zone, hazardRec[0].id) # Hazard id 1 is Tsunami 10 meters hazard
     #(0..closest_zone.count-1).each do |i|
       #zone = Zone.find(closest_zone[i])
       rectangles.all.each do |rectangle|
@@ -133,7 +134,7 @@ class TsunamiController < ApplicationController
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
-    gmap_str_key = "&key="
+    gmap_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
     
     thickness = 33.to_s
     gmapstatic_str_rectangle = ""
@@ -245,7 +246,7 @@ class TsunamiController < ApplicationController
       gmapstatic_str_position = "&location="+lat.to_s+","+lon.to_s+
                                 "&heading="+tetha.to_s+
                                 "&pitch=15&&fov=65"
-      gmap_str_key = "&key="
+      gmap_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
       
       # google map apis string generator <<<
       # registering user and map image >>>

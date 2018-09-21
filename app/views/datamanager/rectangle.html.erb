@@ -1,0 +1,36 @@
+<% provide(:title, "Rectangle Data Management") %>
+<table border ="1" align="center">
+    <tr>
+        <th>
+            Description
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Rectangle Data Seed
+        </td>
+        <td>
+            <%= form_tag datamanager_seedrectangle_path, multipart: true do %>
+                File Txt: <%= file_field_tag :fileRectangleSeed %>
+                <%= submit_tag "Rectangle table seed" %>
+            <% end %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Rectangle All Region
+        </td>
+        <td>
+            <%= button_to 'Delete All Rectangle', datamanager_deleteallrectangle_path %>
+        </td>
+    </tr>
+</table>
+<%= link_to('Back to home', static_pages_home_path)%>
+<% if @rectangles.count>0 %>
+  <% (@rectangles.count-9..@rectangles.count-1).each do |i|%>
+	  <p><%=@rectangles[i].id%>,Hazard id: <%=@rectangles[i].hazard_id%>,Zone id: <%=@rectangles[i].zone_id%>, ,Anchor id: <%=@rectangles[i].anchor_id%></p>
+  <% end %>
+<% end %>

@@ -88,13 +88,14 @@ class FloodController < ApplicationController
     # select 2 closest zones <<<
     
     # select 111 closest rectangle >>>
+    hazardRec= Hazard.where("name = ?", 'Flood 88mm/hour') #Achtung!
     top111 = 111
     adj_lat = -9999 
     adj_lon = -9999
     closest_rectangle1 = {}
     closest_rectangle2 = {}
     closest_rectangle3 = {}
-    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ? AND iteration IN (?)",closest_zone, 2, sim_time) # Hazard id 1 is Tsunami 10 meters hazard
+    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ? AND iteration IN (?)",closest_zone, hazardRec[0].id, sim_time) # corrected
     rectangles.all.each do |rectangle|
       distance_to_rectangle = -1 # default value for null in distance
   
@@ -190,7 +191,7 @@ class FloodController < ApplicationController
                             "&scale=1&center=" + lat.to_s + "," + lon.to_s +
                             "&zoom=" + map_scale.to_s
     gmapstatic_str_marker = "&markers=size:tiny%7Ccolor:yellow%7C" + lat.to_s + "," + lon.to_s
-    gmapstatic_str_key = "&key="
+    gmapstatic_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end

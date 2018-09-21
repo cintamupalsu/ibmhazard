@@ -5,7 +5,8 @@ class LandslideController < ApplicationController
   end
     
   def map
-    #sample parameters http://ibmhazard-maulanamania.c9users.io/landslide/map?coord=34.905062_138.347685_640_640_jpg_16_test_1
+    #sample parameters http://ibmhazard-maulanamania.c9users.io/landslide/map?coord=37.692307_-122.428387_640_640_jpg_16_test_1
+
     parastr = params[:coord]
 
     #breakdown parametes >>>
@@ -100,11 +101,12 @@ class LandslideController < ApplicationController
     # select 2 closest zones <<<
     
     # select 111 closest rectangle >>>
+    hazardRec= Hazard.where("name = ?", 'Landslide')
     top111 = 111
     adj_lat = -9999 
     adj_lon = -9999
     closest_rectangle = {}
-    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ?",closest_zone,3) # Hazard id 1 is Tsunami 10 meters hazard
+    rectangles = Rectangle.where("zone_id IN (?) AND hazard_id = ?",closest_zone, hazardRec[0].id) # Hazard id 1 is Tsunami 10 meters hazard
     rectangles.all.each do |rectangle|
       distance_to_rectangle = -1 # default value for null in distance
   
@@ -168,7 +170,7 @@ class LandslideController < ApplicationController
     if map_type==1
       gmapstatic_str_params+="&maptype=hybrid"
     end
-    gmapstatic_str_key = "&key="
+    gmapstatic_str_key = "&key=AIzaSyAkgkNac39WbHGuDbPqKDdVI94SzCKbf3Q"
     
     thickness = 33.to_s
     gmapstatic_str_rectangle = ""

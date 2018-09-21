@@ -1,0 +1,36 @@
+<% provide(:title, "Anchor Data Management") %>
+<table border ="1" align="center">
+    <tr>
+        <th>
+            Description
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Anchor Data Seed
+        </td>
+        <td>
+            <%= form_tag datamanager_seedanchor_path, multipart: true do %>
+                File Txt: <%= file_field_tag :fileAnchorSeed %>
+                <%= submit_tag "Anchor table seed" %>
+            <% end %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Delete All Anchor
+        </td>
+        <td>
+            <%= button_to 'Delete All Anchor', datamanager_deleteallanchor_path %>
+        </td>
+    </tr>
+</table>
+<%= link_to('Back to home', static_pages_home_path)%>
+<% if @anchors.count>0 %>
+  <% (0..@anchors.count-1).each do |i|%>
+	  <p><%=@anchors[i].id%>, <%=@anchors[i].name%></p>
+  <% end %>
+<% end %>
